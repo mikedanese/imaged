@@ -1,0 +1,45 @@
+package server
+
+import (
+	"golang.org/x/net/context"
+)
+
+var (
+{{ range $i, $t := .Types }}
+	{{ to_lower $t }}sBucket = "{{ to_lower $t }}s"
+{{ end }}
+
+	resourceBuckets = []string{
+{{ range $i, $t := .Types }}
+	{{ to_lower $t }}sBucket,
+{{ end }}
+}
+)
+
+{{ range $i, $t := .Types }}
+func (s *{{ to_lower $t }}sServerImpl) List(context.Context, *api.Void) (*api.{{ $t }}List, error) {
+	var es api.{{ $t }}List
+	return &es, s.s.db.View(func(tx *bolt.Tx) error {
+		return tx.Bucket([]byte({{ to_lower $t }}sBucket)).ForEach(func(k, v []byte) error {
+			var e api.{{ $t }}
+			if err := proto.Unmarshal(v, &e); err != nil {
+				return err
+			}
+			es.{{ $t }}s = append(es.{{ $t }}s, &e)
+			return nil
+		})
+	})
+}
+
+func (s *{{ to_lower $t }}sServerImpl) Put(c context.Context, req *api.{{ $t }}) (*api.{{ $t }}, error) {
+	return req, s.s.db.Update(func(tx *bolt.Tx) error {
+		return WriteProto(tx, {{ to_lower $t }}sBucket, req.Meta.Name, req)
+	})
+}
+
+func (s *{{ to_lower $t }}sServerImpl) Delete(c context.Context, req *api.{{ $t }}) (*api.{{ $t }}, error) {
+	return req, s.s.db.Update(func(tx *bolt.Tx) error {
+		return tx.Bucket([]byte({{ to_lower $t }}sBucket)).Delete([]byte(req.Meta.Name))
+	})
+}
+{{ end }}

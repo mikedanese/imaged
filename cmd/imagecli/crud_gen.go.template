@@ -1,0 +1,52 @@
+package main
+
+import (
+	"golang.org/x/net/context"
+)
+
+
+var (
+	crudHelpers = map[string]CRUD{
+{{ range $i, $T := .Types }}
+{{ $t := to_lower $T }}
+{{ $crud := printf "%ssCRUD" $t }}
+	"{{ $t }}": &{{ $crud }}{},
+{{ end }}
+	}
+)
+
+{{ range $i, $T := .Types }}
+{{ $t := to_lower $T }}
+{{ $crud := printf "%ssCRUD" $t }}
+
+type {{ $crud }} struct {}
+
+func (h *{{ $crud }}) List(c *client.Client) {
+	es, err := c.{{ $T }}s().List(context.Background(), &api.Void{})
+	if err != nil {
+		log.Fatalf("err: %v", err)
+	}
+	if err := proto.MarshalText(os.Stderr, es); err != nil {
+		log.Fatalf("err: %v", err)
+	}
+}
+
+func (h *{{ $crud }}) Put(c *client.Client, k, v string) {
+	var e api.{{ $T }}
+	err := json.Unmarshal([]byte(k), &e)
+	if err != nil {
+		log.Fatalf("err: %v", err)
+	}
+	_, err = c.{{ $T }}s().Put(context.Background(), &e)
+	if err != nil {
+		log.Fatalf("err: %v", err)
+	}
+	if err := proto.MarshalText(os.Stderr, &e); err != nil {
+		log.Fatalf("err: %v", err)
+	}
+}
+
+func (h *{{ $crud }}) Delete(c *client.Client, k string) {
+}
+
+{{ end }}

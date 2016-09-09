@@ -4,7 +4,7 @@ import "google/protobuf/timestamp.proto";
 
 service Images {
   rpc List(Void) returns (ImageList) {}
-  rpc Create(Image) returns (Image) {}
+  rpc Put(Image) returns (Image) {}
   rpc Delete(Image) returns (Image) {}
 }
 
@@ -40,6 +40,34 @@ message ImageList {
   repeated Image images = 1;
 }
 
-service Blobs {}
-service Bundles {}
+service Blobs {
+  rpc List(Void) returns (BlobList) {}
+  rpc Put(Blob) returns (Blob) {}
+  rpc Delete(Blob) returns (Blob) {}
+}
 
+message Blob {
+  ObjectMeta meta = 1;
+  string url = 2;
+  repeated Condition conditions = 3;
+}
+
+message BlobList {
+  repeated Blob blobs = 1;
+}
+
+service Bundles {
+  rpc List(Void) returns (BundleList) {}
+  rpc Put(Bundle) returns (Bundle) {}
+  rpc Delete(Bundle) returns (Bundle) {}
+}
+
+message Bundle {
+  ObjectMeta meta = 1;
+  string url = 2;
+  repeated Condition conditions = 3;
+}
+
+message BundleList {
+  repeated Bundle bundles = 1;
+}
