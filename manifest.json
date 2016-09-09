@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "mediaType": "application/vnd.oci.image.manifest.v1+json",
+  "config": {
+    "schemaVersion": 1,
+    "mediaType": "application/vnd.oci.descriptor.v1+json",
+    "digest": "",
+    "size": 100
+  },
+  "layers": [
+  ],
+  "annotations": {
+    "foo": "bar"
+  }
+}

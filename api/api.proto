@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+service Images {
+  rpc List(Void) returns (ImageList) {}
+  rpc Create(Image) returns (Image) {}
+  rpc Delete(Image) returns (Image) {}
+}
+
+message ObjectMeta {
+  string name = 1;
+  google.protobuf.Timestamp creation_timestamp = 2;
+  google.protobuf.Timestamp deletion_timestamp = 3;
+  map<string, string> labels = 4;
+  map<string, string> annotations = 5;
+}
+
+message Void {}
+
+message Status {
+  repeated Condition conditions = 1;
+}
+
+message Condition {
+  string type = 1;
+  bool status = 2;
+  string reason = 3;
+  google.protobuf.Timestamp last_transition = 4;
+}
+
+
+message Image {
+  ObjectMeta meta = 1;
+  string url = 2;
+  repeated Condition conditions = 3;
+}
+
+message ImageList {
+  repeated Image images = 1;
+}
+
+service Blobs {}
+service Bundles {}
+
