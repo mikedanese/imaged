@@ -1,0 +1,18 @@
+package: github.com/opencontainers/imaged
+import:
+- package: github.com/boltdb/bolt
+  version: v1.3.0
+- package: github.com/golang/protobuf
+  version: 1f49d83d9aa00e6ce4fc8258c71cc7786aec968a
+  subpackages:
+  - proto
+  - ptypes/timestamp
+- package: golang.org/x/net
+  version: 9313baa13d9262e49d07b20ed57dceafcd7240cc
+  subpackages:
+  - context
+- package: google.golang.org/grpc
+  version: v1.0.1-GA
+- package: github.com/golang/glog
+- package: github.com/spf13/cobra
+- package: github.com/spf13/pflag
